@@ -6,6 +6,7 @@ import Login from '../../components/Login';
 import Registro from '../../components/Registro';
 
 import login from '../../assets/class/login'; 
+import React from 'react';
  
 export default function Inicial() {
   const email = '';
