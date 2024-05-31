@@ -30,7 +30,7 @@ const SignInScreen = () => {
 
     // Save login data to Cosmos DB
     const databaseId = process.env.COSMOSDB_DATABASE_ID;
-    const containerId = process.env.COSMOSDB_CONTAINER_ID;
+    const containerId = process.env.COSMOSDB_CONTAINER_ID_LOGIN;
     const partitionKey = { kind: 'Hash', paths: ['/userId'] };
 
     const loginData = {
