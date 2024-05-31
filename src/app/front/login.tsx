@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { CosmosClient } from '@azure/cosmos';
 import Button from '../../components/Button';
 import Colors from '../../constants/Colors';
-import { Link, Stack } from 'expo-router';
+import { Link, Stack, useNavigation } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 import { dotenv } from 'react-native-dotenv';
 
@@ -13,6 +13,7 @@ const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const navigation = useNavigation(); // Utilize useNavigation hook
 
   async function signInWithEmail() {
     setLoading(true);
@@ -38,6 +39,12 @@ const SignInScreen = () => {
       password, // **Never store raw password in Cosmos DB, consider hashing!**
     };
 
+    if (error) {
+      Alert.alert(error.message);
+      setLoading(false);
+      return;
+    }
+
     try {
       await CosmosClient
         .database(databaseId)
@@ -49,6 +56,7 @@ const SignInScreen = () => {
     }
 
     setLoading(false);
+    navigation.navigate('home'); // Navigate to Home screen
   }
 
   return (

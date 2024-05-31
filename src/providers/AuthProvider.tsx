@@ -28,19 +28,11 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const fetchSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      const { data: { session, user } } = await supabase.auth.getSession();
 
-      const [profile, setProfile] = useState<{
-        avatar_url: string | null;
-        full_name: string | null;
-        group: string;
-        id: string;
-        updated_at: string | null;
-        username: string | null;
-        website: string | null;
-      } | null>(null);
+      setSession(session);
+      setProfile(data.user); // Set profile from user data
+      setLoading(false);
     };
 
     fetchSession();
