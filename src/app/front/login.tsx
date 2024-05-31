@@ -1,10 +1,13 @@
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import React, { useState } from 'react';
-
+import { CosmosClient } from '@azure/cosmos';
 import Button from '../../components/Button';
 import Colors from '../../constants/Colors';
 import { Link, Stack } from 'expo-router';
 import { supabase } from '../../lib/supabase';
+import { dotenv } from 'react-native-dotenv';
+
+dotenv.config();
 
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +21,33 @@ const SignInScreen = () => {
       password,
     });
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+      setLoading(false);
+      return;
+    }
+
+    // Save login data to Cosmos DB
+    const databaseId = process.env.COSMOSDB_DATABASE_ID;
+    const containerId = process.env.COSMOSDB_CONTAINER_ID;
+    const partitionKey = { kind: 'Hash', paths: ['/userId'] };
+
+    const loginData = {
+      userId: '<USER_ID>', // Replace with actual user ID
+      email,
+      password, // **Never store raw password in Cosmos DB, consider hashing!**
+    };
+
+    try {
+      await CosmosClient
+        .database(databaseId)
+        .container(containerId)
+        .items.create(loginData, partitionKey);
+      console.log('Login data saved to Cosmos DB');
+    } catch (error) {
+      console.error('Error saving login data to Cosmos DB:', error);
+    }
+
     setLoading(false);
   }
 
