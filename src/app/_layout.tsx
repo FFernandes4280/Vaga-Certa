@@ -4,9 +4,9 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-
 import React from 'react';
 import { useColorScheme } from 'react-native';
+import AuthProvider from '../providers/AuthProvider';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -44,11 +44,13 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
+    <AuthProvider>
       <Stack>
         <Stack.Screen name="(autenticar)"
         options={{ headerShown: false }} />
         <Stack.Screen name="(home)"
         options={{ headerShown: false }} />
       </Stack>
+    </AuthProvider>
   );
 }

@@ -16,6 +16,7 @@ const Cadastrar = () => {
 
     if (error) Alert.alert(error.message);
     setLoading(false);
+    Alert.alert('Conta criada com sucesso! Faça login para continuar.')
   }
 
   return (
