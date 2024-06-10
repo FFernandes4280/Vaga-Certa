@@ -12,14 +12,23 @@ export type InsertTables<T extends keyof Database['public']['Tables']> =
 export type Enums<T extends keyof Database['public']['Enums']> =
   Database['public']['Enums'][T];
 
+export type tipoVaga = 'Especial' | 'Normal'
+
 export type Vaga = {
   id: number;
-  local: string;
-  status: boolean;
+  local: string; // nome do estacionamento
+  tipo: tipoVaga;
+  status: boolean; // True = Disponível | False = Ocupada
+  plano: number;
 };
 
 export type Perfil = {
-  id: string;
+  id: number;
   email: string;
   password: string;
+};
+
+export type Estacionamento = {
+  id: number;
+  name: string;
 };
