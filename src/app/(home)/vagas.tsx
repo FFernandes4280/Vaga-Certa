@@ -1,7 +1,9 @@
 import React from "react";
-import { Text } from "react-native"; // Import the Text component from the react-native package
+import { Text } from "react-native";
 
-const Home = () => {
+const Vagas = () => {
     return <Text>Home</Text>;
 };
-export default Home;
+
+
+export default Vagas;

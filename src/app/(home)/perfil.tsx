@@ -10,7 +10,7 @@ const ProfileScreen = () => {
       {user && (
         <>
           <Image
-            source={user.photoUrl ? { uri: user.photoUrl } : require('../../assets/images/react-logo.png')} // Handle default image
+            source={user.photoUrl ? { uri: user.photoUrl } : require('../../../assets/images/react-logo.png')} // Handle default image
             style={styles.profileImage}
           />
           <Text style={styles.profileEmail}>{user.email}</Text>
