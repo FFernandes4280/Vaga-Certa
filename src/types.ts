@@ -30,5 +30,5 @@ export type Perfil = {
 
 export type Estacionamento = {
   id: number;
-  name: string;
+  nome: string;
 };
