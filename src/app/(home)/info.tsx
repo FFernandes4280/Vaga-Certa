@@ -1,47 +1,105 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
-// import { supabase } from './supabaseClient'; // Import the Text component from the react-native package
+import { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { Vaga } from '../../types';
+import { supabase } from '../../lib/supabase';
 
-const Info = () => {
-    const route = useRoute();
-    const [info, setInfo] = useState(null);
+type MapaScreenRouteProp = RouteProp<{ params: { id: Number } }, 'params'>;
+
+const InfoVaga = ({ route }: { route: MapaScreenRouteProp }) => {
+    const [vaga, setVaga] = useState<Vaga | null>(null);
+    const [loading, setLoading] = useState(true);
+    const vagaId = route.params.id;
 
     useEffect(() => {
-        // Supondo que o identificador da vaga seja passado como parâmetro para esta página
-        const { identificador } = route.params;
+        const fetchVaga = async () => {
+            const { data, error } = await supabase
+                .from('Vaga')
+                .select('*')
+                .eq('id', vagaId)
+                .single();
 
-        // Função para buscar as informações da vaga no Supabase
-        async function fetchInfo() {
-        try {
-            let { data, error } = await supabase
-            .from('vagas') // Substitua 'vagas' pelo nome da sua tabela
-            .select('identificador, localizacao, tipo, status, plano')
-            .eq('identificador', identificador)
-            .single();
+            if (error) {
+                console.error('Erro ao buscar vaga:', error);
+            } else {
+                setVaga(data);
+            }
+            setLoading(false);
+        };
 
-            if (error) throw error;
-            setInfo(data);
-        } catch (error) {
-            alert(error.message);
+        fetchVaga();
+    }, [vagaId]);
+
+    const handleReserva = () => {
+        if (!vaga) {
+            Alert.alert('Erro', 'Vaga não encontrada.');
+            return;
         }
-        }
+        const inicioReserva = new Date();
+        const fimReserva = new Date(inicioReserva.getTime() + vaga.plano * 60 * 60 * 1000);
 
-        fetchInfo();
-    }, []);
+        Alert.alert(
+            'Reserva Confirmada!',
+            `ID da Vaga: ${vaga.id}\nInício da Reserva: ${inicioReserva.toLocaleTimeString()}\nFim da Reserva: ${fimReserva.toLocaleTimeString()}`
+        );
 
-    if (!info) {
-        return <Text>Carregando...</Text>;
+        // lógica para adicionar a reserva no banco de dados
+    };
+
+    if (loading) {
+        return <ActivityIndicator size="large" />;
+    }
+
+    if (!vaga) {
+        return <Text>Não foi possível encontrar a vaga.</Text>;
     }
 
     return (
-        <View>
-        <Text>Identificador: {info.identificador}</Text>
-        <Text>Localização: {info.localizacao}</Text>
-        <Text>Tipo: {info.tipo}</Text>
-        <Text>Status: {info.status}</Text>
-        <Text>Plano: {info.plano}</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Reserva de vaga</Text>
+            <Text style={styles.label}>Identificador: <Text style={styles.value}>{vaga.id}</Text></Text>
+            <Text style={styles.label}>Localização: <Text style={styles.value}>{vaga.local}</Text></Text>
+            <Text style={styles.label}>Tipo: <Text style={styles.value}>{vaga.tipo}</Text></Text>
+            <Text style={styles.label}>Status: <Text style={styles.value}>{vaga.status ? 'Disponível' : 'Ocupada'}</Text></Text>
+            <Text style={styles.label}>Plano: <Text style={styles.value}>{vaga.plano} Horas</Text></Text>
+            
+            {vaga.status && (
+                <TouchableOpacity onPress={handleReserva} style={styles.button}>
+                    <Text style={styles.buttonText}>Reservar</Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 };
-export default Info;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    label: {
+        fontWeight: 'bold',
+    },
+    value: {
+        fontWeight: 'normal',
+    },
+    button: {
+        marginTop: 20,
+        backgroundColor: '#007bff',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: '#ffffff',
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+});
+
+export default InfoVaga;
