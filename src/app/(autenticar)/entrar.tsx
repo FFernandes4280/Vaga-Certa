@@ -10,47 +10,59 @@ const Entrar = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   async function signInWithEmail() {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) Alert.alert(error.message);
+    if (error) {
+      Alert.alert(error.message);
+    } else if (data) {
+      setIsLoggedIn(true); // Atualize o estado para indicar sucesso no login
+    }
     setLoading(false);
   }
 
+  // Renderização condicional baseada no estado de login
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: 'Bem vindo' }} />
+      {isLoggedIn ? (
+        <Link href='/vagas' /> // Redireciona para a página 'vagas'
+      ) : (
+        <>
+          <Stack.Screen options={{ title: 'Bem vindo' }} />
 
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Entre seu email"
-        style={styles.input}
-      />
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Entre seu email"
+            style={styles.input}
+          />
 
-      <Text style={styles.label}>Senha</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Entre sua senha"
-        style={styles.input}
-        secureTextEntry
-      />
+          <Text style={styles.label}>Senha</Text>
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Entre sua senha"
+            style={styles.input}
+            secureTextEntry
+          />
 
-      <Button
-        onPress={signInWithEmail}
-        disabled={loading}
-        text={loading ? 'Carregando...' : 'Entrar'}
-      />
-      <Link href={'/cadastrar'} style={styles.textButton}>
-        Crie uma conta
-      </Link>
+          <Button
+            onPress={signInWithEmail}
+            disabled={loading}
+            text={loading ? 'Carregando...' : 'Entrar'}
+          />
+          <Link href={'/cadastrar'} style={styles.textButton}>
+            Crie uma conta
+          </Link>
+        </>
+      )}
     </View>
   );
 };

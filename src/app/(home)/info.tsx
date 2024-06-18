@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
-import { Vaga } from '../../types';
+import { Vaga, RootStackParamList } from '../../types';
 import { supabase } from '../../lib/supabase';
 
-type MapaScreenRouteProp = RouteProp<{ params: { id: Number } }, 'params'>;
+type InfoScreenRouteProp = RouteProp<RootStackParamList, 'Info'>;
 
-const InfoVaga = ({ route }: { route: MapaScreenRouteProp }) => {
+const InfoVaga = ({ route }: { route: InfoScreenRouteProp }) => {
     const [vaga, setVaga] = useState<Vaga | null>(null);
     const [loading, setLoading] = useState(true);
     const vagaId = route.params.id;

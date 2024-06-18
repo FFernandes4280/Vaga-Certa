@@ -13,10 +13,13 @@ const Cadastrar = () => {
   async function signUpWithEmail() {
     setLoading(true);
     const { error } = await supabase.auth.signUp({ email, password });
-
-    if (error) Alert.alert(error.message);
+  
+    if (error) {
+      Alert.alert(error.message);
+    } else {
+      Alert.alert('Conta criada com sucesso! Faça login para continuar.');
+    }
     setLoading(false);
-    Alert.alert('Conta criada com sucesso! Faça login para continuar.')
   }
 
   return (
