@@ -32,3 +32,12 @@ export type Estacionamento = {
   id: number;
   nome: string;
 };
+
+export type Reserva = {
+  id: number;
+  idUser: number;
+  idVaga: number;
+  horaInicial: string;
+  horaFim: string;
+  local: string;
+};

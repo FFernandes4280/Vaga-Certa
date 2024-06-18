@@ -30,21 +30,42 @@ const InfoVaga = ({ route }: { route: MapaScreenRouteProp }) => {
         fetchVaga();
     }, [vagaId]);
 
-    const handleReserva = () => {
+    const handleReserva = async () => {
         if (!vaga) {
             Alert.alert('Erro', 'Vaga não encontrada.');
             return;
         }
         const inicioReserva = new Date();
         const fimReserva = new Date(inicioReserva.getTime() + vaga.plano * 60 * 60 * 1000);
-
-        Alert.alert(
-            'Reserva Confirmada!',
-            `ID da Vaga: ${vaga.id}\nInício da Reserva: ${inicioReserva.toLocaleTimeString()}\nFim da Reserva: ${fimReserva.toLocaleTimeString()}`
-        );
-
-        // lógica para adicionar a reserva no banco de dados
+    
+        // formata as datas para o formato de tempo 'HH:mm'
+        const formatTime = (date: Date) => {
+            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        };
+    
+        const novaReserva = {
+            idUser: supabase.auth.user().id, // não sei como puxar o id do usuário
+            idVaga: vaga.id,
+            horaInicial: formatTime(inicioReserva),
+            horaFim: formatTime(fimReserva),
+            local: vaga.local,
+        };
+    
+        const { error } = await supabase
+            .from('Reserva')
+            .insert([novaReserva]);
+    
+        if (error) {
+            console.error('Erro ao adicionar reserva:', error);
+            Alert.alert('Erro', 'Não foi possível realizar a reserva.');
+        } else {
+            Alert.alert(
+                'Reserva Confirmada!',
+                `ID da Vaga: ${vaga.id}\nInício da Reserva: ${inicioReserva.toLocaleTimeString()}\nFim da Reserva: ${fimReserva.toLocaleTimeString()}`
+            );
+        }
     };
+    
 
     if (loading) {
         return <ActivityIndicator size="large" />;

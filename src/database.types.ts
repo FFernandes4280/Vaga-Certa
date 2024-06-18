@@ -49,6 +49,33 @@ export interface Database {
           nome?: string;
         };
       };
+      Reserva: {
+        Row: {
+          id: number;
+          idUser: number;
+          idVaga: number;
+          horaInicial: string; // 'HH:mm'
+          horaFim: string;     // 'HH:mm'
+          local: string;
+        };
+        Insert: {
+          idUser: number;
+          idVaga: number;
+          horaInicial: string; // 'HH:mm'
+          horaFim: string;     // 'HH:mm'
+          local: string;
+        };
+        Update: {
+          idUser?: number;
+          idVaga?: number;
+          horaInicial?: string; // 'HH:mm'
+          horaFim?: string;     // 'HH:mm'
+          local?: string;
+        };
+        Delete: {
+          id: number;
+        };
+      };
     };
     Enums: {
       tipoVaga: ['Especial', 'Normal'];
