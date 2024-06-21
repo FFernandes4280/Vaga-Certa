@@ -1,20 +1,34 @@
 import { View, Image, Text, StyleSheet } from 'react-native';
-import { useUser } from '../../providers/AuthProvider'; // Import user data provider
+import { useAuth } from '../../providers/AuthProvider'; // Importa o hook useAuth
 
 const ProfileScreen = () => {
-  const { user } = useUser(); // Get user data from provider
+  const { session, loading } = useAuth(); // Obtém a sessão e o estado de carregamento do contexto de autenticação
+
+  if (loading) {
+    return (
+      <View style={styles.profileContainer}>
+        <Text>Carregando...</Text>
+      </View>
+    );
+  }
+
+  if (!session) {
+    return (
+      <View style={styles.profileContainer}>
+        <Text>Não autenticado</Text>
+      </View>
+    );
+  }
+
+  const { user } = session; // Obtém o objeto de usuário da sessão
 
   return (
     <View style={styles.profileContainer}>
-      {user && (
-        <>
-          <Image
-            source={user.photoUrl ? { uri: user.photoUrl } : require('../../../assets/images/react-logo.png')} // Handle default image
-            style={styles.profileImage}
-          />
-          <Text style={styles.profileEmail}>{user.email}</Text>
-        </>
-      )}
+      <Image
+        source={user?.user_metadata?.avatar_url ? { uri: user.user_metadata.avatar_url } : require('../../../assets/images/icon.png')} // Manipula a imagem padrão
+        style={styles.profileImage}
+      />
+      <Text style={styles.profileEmail}>{user?.email}</Text>
     </View>
   );
 };

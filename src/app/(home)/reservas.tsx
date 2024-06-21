@@ -1,37 +1,58 @@
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { Reserva } from '../../types'; 
 import { supabase } from '../../lib/supabase';
 
 const Reservas = () => {
     const [reserva, setReserva] = useState<Reserva | null>(null);
-    const userId = supabase.auth.user()?.id;
+    const [loading, setLoading] = useState(true);
+    const [userId, setUserId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchReserva = async () => {
-            const { data, error } = await supabase
-                .from('Reserva') 
-                .select('*')
-                .eq('idUser', userId)
-                .maybeSingle();
+            setLoading(true);
+            try {
+                const response = await supabase.auth.getUser();
+                if (response.error) {
+                    console.error('Erro ao buscar informações do usuário:', response.error.message);
+                    return;
+                }
+                
+                const user = response.data?.user;
+                if (user) {
+                    setUserId(user.id);
+                    
+                    const { data, error } = await supabase
+                        .from('Reserva') 
+                        .select('*')
+                        .eq('idUser', user.id)
+                        .single();
 
-            if (error) {
-                console.error('Erro ao buscar reserva:', error);
-            } else {
-                setReserva(data);
+                    if (error) {
+                        console.error('Erro ao buscar reserva:', error);
+                        Alert.alert('Erro', 'Não foi possível buscar a reserva.');
+                    } else {
+                        setReserva(data);
+                    }
+                } else {
+                    console.error('Usuário não autenticado ou não encontrado.');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar informações do usuário:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
-        if (userId) {
-            fetchReserva();
-        }
-    }, [userId]);
+        fetchReserva();
+    }, []);
 
     const handleLiberarVaga = async () => {
         if (!reserva) {
             Alert.alert('Erro', 'Reserva não encontrada.');
             return;
         }
+    
         Alert.alert(
             'Atenção',
             'Você realmente gostaria de liberar a vaga?',
@@ -44,27 +65,32 @@ const Reservas = () => {
                 {
                     text: 'Sim',
                     onPress: async () => {
-                        const { error } = await supabase
-                            .from('Reserva')
-                            .delete()
-                            .match({ id: reserva.id });
-    
-                        if (error) {
-                            console.error('Erro ao excluir reserva:', error);
-                            Alert.alert('Erro', 'Não foi possível excluir a reserva.');
-                        } else {
-                            const { error: updateError } = await supabase
-                                .from('Vaga')
-                                .update({ status: true })
-                                .match({ id: reserva.idVaga });
-    
-                            if (updateError) {
-                                console.error('Erro ao atualizar vaga:', updateError);
-                                Alert.alert('Erro', 'Não foi possível atualizar o status da vaga.');
+                        try {
+                            const { error } = await supabase
+                                .from('Reserva')
+                                .delete()
+                                .match({ id: reserva.id });
+        
+                            if (error) {
+                                console.error('Erro ao excluir reserva:', error);
+                                Alert.alert('Erro', 'Não foi possível excluir a reserva.');
                             } else {
-                                Alert.alert('Sucesso', 'A reserva foi excluída e a vaga atualizada para disponível.');
-                                setReserva(null);
+                                const { error: updateError } = await supabase
+                                    .from('Vaga')
+                                    .update({ status: true })
+                                    .match({ id: reserva.idVaga });
+        
+                                if (updateError) {
+                                    console.error('Erro ao atualizar vaga:', updateError);
+                                    Alert.alert('Erro', 'Não foi possível atualizar o status da vaga.');
+                                } else {
+                                    Alert.alert('Sucesso', 'A reserva foi excluída e a vaga atualizada para disponível.');
+                                    setReserva(null);
+                                }
                             }
+                        } catch (error) {
+                            console.error('Erro ao liberar vaga:', error);
+                            Alert.alert('Erro', 'Ocorreu um erro ao liberar a vaga.');
                         }
                     },
                 },
@@ -72,6 +98,10 @@ const Reservas = () => {
             { cancelable: false }
         );
     };
+
+    if (loading) {
+        return <ActivityIndicator size="large" />;
+    }
 
     if (!reserva) {
         return <Text>Nenhuma reserva ativa.</Text>;

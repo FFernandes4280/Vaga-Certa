@@ -1,4 +1,5 @@
 import { Database } from './database.types';
+import { RouteProp } from '@react-navigation/native';
 
 export type Tables<T extends keyof Database['public']['Tables']> =
   Database['public']['Tables'][T]['Row'];
@@ -13,10 +14,15 @@ export type Enums<T extends keyof Database['public']['Enums']> =
   Database['public']['Enums'][T];
 
 export type RootStackParamList = {
-    Info: {
-      id: number; 
+    Home: undefined;
+    Info: { id: number };
+    Mapa: {local: string};
+    Reservas: undefined;
+    Perfil: undefined;
   };
-};
+  
+  
+  export type InfoScreenRouteProp = RouteProp<RootStackParamList, 'Info'>;
 
 export type tipoVaga = 'Especial' | 'Normal'
 
