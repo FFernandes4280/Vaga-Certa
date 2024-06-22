@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Alert, ActivityIndicator, TouchableOpacity, Pressable } from 'react-native';
 import { Link } from 'expo-router';
 import { Estacionamento } from '../../types';
 import { supabase } from '../../lib/supabase';
@@ -41,7 +41,7 @@ const Vagas = () => {
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
                 estacionamentos.map((lot) => (
-                    <Link key={lot.nome} href={`${lot.nome}`} style={styles.estacionamentoItem}>
+                    <Link key={`${lot.nome}`} href={`/${lot.nome}`} style={styles.estacionamentoItem}>
                         <Text>{lot.nome}</Text>
                     </Link>
                 ))
