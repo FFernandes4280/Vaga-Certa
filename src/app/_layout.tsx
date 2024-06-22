@@ -46,6 +46,8 @@ function RootLayoutNav() {
         options={{ headerShown: false }} />
         <Stack.Screen name="(home)"
         options={{ headerShown: false }} />
+        <Stack.Screen name="(local)"
+        options={{ headerShown: false }} />
       </Stack>
     </AuthProvider>
   );

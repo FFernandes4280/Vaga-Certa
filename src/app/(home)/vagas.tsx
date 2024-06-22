@@ -41,7 +41,7 @@ const Vagas = () => {
                 <ActivityIndicator size="large" color="#0000ff" />
             ) : (
                 estacionamentos.map((lot) => (
-                    <Link key={lot.id} href={`/mapa/${lot.id}`} style={styles.estacionamentoItem}>
+                    <Link href={`${lot.nome}`} style={styles.estacionamentoItem}>
                         <Text>{lot.nome}</Text>
                     </Link>
                 ))
