@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { View, FlatList, Text, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { useState, useEffect} from 'react';
+import { View, FlatList, Text, StyleSheet, Dimensions, ActivityIndicator, Pressable } from 'react-native';
 import { Vaga} from '../../types';
 import { supabase } from '../../lib/supabase';
 import { Link } from 'expo-router';
+
 
 const numColumns = 2; 
 const WIDTH = Dimensions.get('window').width;
@@ -39,14 +40,14 @@ const Morumbi = () => {
   }, []);
 
   const renderItem = ({ item }: { item: Vaga }) => (
-    <Link key={item.id} href={`/InfoVaga`} style={styles.link}>
-      <View style={styles.itemContainer}>
+    <Link key={item.id} href={`/${item.id}`} style={styles.link} asChild>
+      <Pressable style={styles.itemContainer}>
         <View style={[styles.item, {
           backgroundColor: item.status ? 'green' : 'red',
         }]}>
           <Text style={styles.itemText}>ID: {item.id}</Text>
         </View>
-      </View>
+      </Pressable>
     </Link>
   );
 
