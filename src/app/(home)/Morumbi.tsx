@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, FlatList, Text, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { View, FlatList, Text, StyleSheet, Dimensions, ActivityIndicator, Pressable } from 'react-native';
 import { Vaga} from '../../types';
 import { supabase } from '../../lib/supabase';
 import { Link } from 'expo-router';
@@ -23,7 +23,6 @@ const Morumbi = () => {
         if (error) {
           console.error('Erro ao buscar vagas:', error);
         } else {
-          // Verifica se data não é null antes de atualizar o estado
           if (data) {
             setVagas(data);
           }
@@ -39,14 +38,24 @@ const Morumbi = () => {
   }, []);
 
   const renderItem = ({ item }: { item: Vaga }) => (
-    <Link key={item.id} href={`/InfoVaga`} style={styles.link}>
-      <View style={styles.itemContainer}>
+    <Link 
+      key={item.id}
+      href={`/info?id=${item.id}`}
+      style={styles.link}
+    >
+      <Pressable 
+        onPress={() => console.log('Vaga ID:', item.id)} // Para garantir que o ID está sendo passado
+        style={({ pressed }) => [
+          styles.itemContainer,
+          { opacity: pressed ? 0.5 : 1 },
+        ]}
+      >
         <View style={[styles.item, {
           backgroundColor: item.status ? 'green' : 'red',
         }]}>
           <Text style={styles.itemText}>ID: {item.id}</Text>
         </View>
-      </View>
+      </Pressable>
     </Link>
   );
 
@@ -70,17 +79,16 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   link: {
+    flex: 1,
     margin: 5,
   },
   itemContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: WIDTH / numColumns,
-    height: WIDTH / numColumns,
+    width: WIDTH / numColumns - 10,
+    height: WIDTH / numColumns - 10,
   },
   item: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 0.5,
