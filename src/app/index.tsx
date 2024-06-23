@@ -19,6 +19,9 @@ const App = () => {
       <Link href="/vagas" asChild>
         <Button title="Home" />
       </Link>
+      <Link href="/Morumbi" asChild>
+        <Button title="Morumbi" />
+      </Link>
       <Button onPress={() => supabase.auth.signOut()} title="Sair" />
     </View>
   );
