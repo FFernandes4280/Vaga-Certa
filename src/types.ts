@@ -1,5 +1,4 @@
 import { Database } from './database.types';
-import { RouteProp } from '@react-navigation/native';
 
 export type Tables<T extends keyof Database['public']['Tables']> =
   Database['public']['Tables'][T]['Row'];
@@ -36,7 +35,7 @@ export type Estacionamento = {
 
 export type Reserva = {
   id: number;
-  idUser: number;
+  idUser: string;
   idVaga: number;
   horaInicial: string;
   horaFim: string;

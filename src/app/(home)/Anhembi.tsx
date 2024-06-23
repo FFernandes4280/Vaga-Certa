@@ -40,11 +40,10 @@ const Anhembi = () => {
   const renderItem = ({ item }: { item: Vaga }) => (
     <Link 
       key={item.id}
-      href={`/info?id=${item.id}`}
+      href={`/home/info?id=${item.id}`}
       style={styles.link}
     >
       <Pressable 
-        onPress={() => console.log('Vaga ID:', item.id)} // Para garantir que o ID está sendo passado
         style={({ pressed }) => [
           styles.itemContainer,
           { opacity: pressed ? 0.5 : 1 },
