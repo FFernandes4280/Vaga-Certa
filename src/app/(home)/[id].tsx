@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Vaga } from '../../types';
@@ -10,7 +10,7 @@ type RouteParams = {
   };
 };
 
-const DetailScreen: React.FC = () => {
+const DetailScreen = () => {
   const route = useRoute<RouteProp<RouteParams, 'InfoVaga'>>();
   const vagaId = route.params.id;
   const [vaga, setVaga] = useState<Vaga | null>(null);

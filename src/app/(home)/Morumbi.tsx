@@ -40,8 +40,9 @@ const Morumbi = () => {
   const renderItem = ({ item }: { item: Vaga }) => (
     <Link 
       key={item.id}
-      href={`/info?id=${item.id}`}
+      href={`/${item.id}`}
       style={styles.link}
+      asChild
     >
       <Pressable 
         onPress={() => console.log('Vaga ID:', item.id)} // Para garantir que o ID está sendo passado
