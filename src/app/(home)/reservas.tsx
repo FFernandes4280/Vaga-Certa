@@ -110,11 +110,24 @@ const Reservas = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Reserva ativa</Text>
-            <Text style={styles.label}>Vaga: <Text style={styles.value}>{reserva.idVaga}</Text></Text>
-            <Text style={styles.label}>Localização: <Text style={styles.value}>{reserva.local}</Text></Text>
-            <Text style={styles.label}>Início da Reserva: <Text style={styles.value}>{reserva.horaInicial}</Text></Text>
-            <Text style={styles.label}>Fim da Reserva: <Text style={styles.value}>{reserva.horaFim}</Text></Text>
-            
+            <View style={styles.infoBox}>
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Vaga: </Text>
+                    <Text style={styles.value}>{reserva.idVaga}</Text>
+                </View>
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Localização: </Text>
+                    <Text style={styles.value}>{reserva.local}</Text>
+                </View>
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Início da Reserva: </Text>
+                    <Text style={styles.value}>{reserva.horaInicial}</Text>
+                </View>
+                <View style={styles.infoRow}>
+                    <Text style={styles.label}>Fim da Reserva: </Text>
+                    <Text style={styles.value}>{reserva.horaFim}</Text>
+                </View>
+            </View>
             <TouchableOpacity onPress={handleLiberarVaga} style={styles.button}>
                 <Text style={styles.buttonText}>Liberar vaga</Text>
             </TouchableOpacity>
@@ -131,6 +144,21 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
+        textAlign: 'center'
+    },
+    infoBox: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        overflow: 'hidden',
+        marginBottom: 20,
+    },
+    infoRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
     },
     label: {
         fontWeight: 'bold',
@@ -139,7 +167,6 @@ const styles = StyleSheet.create({
         fontWeight: 'normal',
     },
     button: {
-        marginTop: 20,
         backgroundColor: '#007bff',
         paddingVertical: 10,
         paddingHorizontal: 15,

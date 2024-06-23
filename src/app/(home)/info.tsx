@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
-import { InfoScreenRouteProp, Vaga } from '../../types';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { Vaga } from '../../types';
 import { supabase } from '../../lib/supabase';
 
-type InfoVagaProps = {
-  route: InfoScreenRouteProp;
+type RouteParams = {
+  InfoVaga: {
+    id: number;
+  };
 };
 
-const InfoVaga: React.FC<InfoVagaProps> = ({ route }) => {
+const InfoVaga: React.FC = () => {
+  const route = useRoute<RouteProp<RouteParams, 'InfoVaga'>>();
+  const vagaId = route.params.id;
   const [vaga, setVaga] = useState<Vaga | null>(null);
   const [loading, setLoading] = useState(true);
-  const vagaId = route.params.id;
-  const [userId, setUserId] = useState<string | null>(null); // Estado para armazenar o ID do usuário
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchVaga = async () => {
+      if (!vagaId) return;
+
       setLoading(true);
       try {
         const { data, error } = await supabase
@@ -75,7 +81,6 @@ const InfoVaga: React.FC<InfoVagaProps> = ({ route }) => {
     const inicioReserva = new Date();
     const fimReserva = new Date(inicioReserva.getTime() + vaga.plano * 60 * 60 * 1000);
 
-    // formata as datas para o formato de tempo 'HH:mm'
     const formatTime = (date: Date) => {
       return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     };
@@ -88,18 +93,23 @@ const InfoVaga: React.FC<InfoVagaProps> = ({ route }) => {
       local: vaga.local,
     };
 
-    const { error } = await supabase
-      .from('Reserva')
-      .insert([novaReserva]);
+    try {
+      const { error } = await supabase
+        .from('Reserva')
+        .insert([novaReserva]);
 
-    if (error) {
+      if (error) {
+        console.error('Erro ao adicionar reserva:', error);
+        Alert.alert('Erro', 'Não foi possível realizar a reserva.');
+      } else {
+        Alert.alert(
+          'Reserva Confirmada!',
+          `ID da Vaga: ${vaga.id}\nInício da Reserva: ${inicioReserva.toLocaleTimeString()}\nFim da Reserva: ${fimReserva.toLocaleTimeString()}`
+        );
+      }
+    } catch (error) {
       console.error('Erro ao adicionar reserva:', error);
       Alert.alert('Erro', 'Não foi possível realizar a reserva.');
-    } else {
-      Alert.alert(
-        'Reserva Confirmada!',
-        `ID da Vaga: ${vaga.id}\nInício da Reserva: ${inicioReserva.toLocaleTimeString()}\nFim da Reserva: ${fimReserva.toLocaleTimeString()}`
-      );
     }
   };
 
@@ -114,12 +124,28 @@ const InfoVaga: React.FC<InfoVagaProps> = ({ route }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Reserva de vaga</Text>
-      <Text style={styles.label}>Identificador: <Text style={styles.value}>{vaga.id}</Text></Text>
-      <Text style={styles.label}>Localização: <Text style={styles.value}>{vaga.local}</Text></Text>
-      <Text style={styles.label}>Tipo: <Text style={styles.value}>{vaga.tipo}</Text></Text>
-      <Text style={styles.label}>Status: <Text style={styles.value}>{vaga.status ? 'Disponível' : 'Ocupada'}</Text></Text>
-      <Text style={styles.label}>Plano: <Text style={styles.value}>{vaga.plano} Horas</Text></Text>
-
+      <View style={styles.infoBox}>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Identificador: </Text>
+          <Text style={styles.value}>{vaga.id}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Localização: </Text>
+          <Text style={styles.value}>{vaga.local}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Tipo: </Text>
+          <Text style={styles.value}>{vaga.tipo}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Status: </Text>
+          <Text style={styles.value}>{vaga.status ? 'Disponível' : 'Ocupada'}</Text>
+        </View>
+        <View style={styles.infoRow}>
+          <Text style={styles.label}>Plano: </Text>
+          <Text style={styles.value}>{vaga.plano} Horas</Text>
+        </View>
+      </View>
       {vaga.status && (
         <TouchableOpacity onPress={handleReserva} style={styles.button}>
           <Text style={styles.buttonText}>Reservar</Text>
@@ -138,6 +164,21 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center'
+  },
+  infoBox: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginBottom: 20,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   label: {
     fontWeight: 'bold',

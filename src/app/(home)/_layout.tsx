@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import 'react-native-gesture-handler';
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -26,3 +27,13 @@ const AuthLayout: React.FC = () => {
 };
 
 export default AuthLayout;
+=======
+import React from 'react';
+import TestInfoVaga from './TestInfoVaga';
+
+const App: React.FC = () => {
+  return <TestInfoVaga />;
+};
+
+export default App;
+>>>>>>> Stashed changes
