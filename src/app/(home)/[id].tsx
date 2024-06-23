@@ -10,7 +10,7 @@ type RouteParams = {
   };
 };
 
-const DetailScreen: React.FC = () => {
+const DetailScreen = () => {
   const route = useRoute<RouteProp<RouteParams, 'InfoVaga'>>();
   const vagaId = route.params.id;
   const [vaga, setVaga] = useState<Vaga | null>(null);
@@ -32,7 +32,7 @@ const DetailScreen: React.FC = () => {
         if (error) {
           console.error('Erro ao buscar vaga:', error);
         } else {
-          setVaga(data);
+          setVaga(data); // Atualiza o estado da vaga com os dados buscados
         }
       } catch (error) {
         console.error('Erro ao buscar vaga:', error);
@@ -72,19 +72,19 @@ const DetailScreen: React.FC = () => {
       Alert.alert('Erro', 'Vaga não encontrada.');
       return;
     }
-
+  
     if (!userId) {
       Alert.alert('Erro', 'Usuário não autenticado.');
       return;
     }
-
+  
     const inicioReserva = new Date();
     const fimReserva = new Date(inicioReserva.getTime() + vaga.plano * 60 * 60 * 1000);
-
+  
     const formatTime = (date: Date) => {
       return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     };
-
+  
     const novaReserva = {
       idUser: userId,
       idVaga: vaga.id,
@@ -92,12 +92,12 @@ const DetailScreen: React.FC = () => {
       horaFim: formatTime(fimReserva),
       local: vaga.local,
     };
-
+  
     try {
       const { error } = await supabase
         .from('Reserva')
         .insert([novaReserva]);
-
+  
       if (error) {
         console.error('Erro ao adicionar reserva:', error);
         Alert.alert('Erro', 'Não foi possível realizar a reserva.');
@@ -106,6 +106,26 @@ const DetailScreen: React.FC = () => {
           'Reserva Confirmada!',
           `ID da Vaga: ${vaga.id}\nInício da Reserva: ${inicioReserva.toLocaleTimeString()}\nFim da Reserva: ${fimReserva.toLocaleTimeString()}`
         );
+        try {
+          const { error: updateError } = await supabase
+            .from('Vaga')
+            .update({ status: false })
+            .match({ id: vaga.id });
+  
+          if (updateError) {
+            console.error('Erro ao atualizar vaga:', updateError);
+            Alert.alert('Erro', 'Não foi possível atualizar o status da vaga.');
+          } else {
+            console.log('Status da vaga atualizado para false.');
+            setVaga(prevVaga => ({
+              ...prevVaga!,
+              status: false
+            }));
+          }
+        } catch (error) {
+          console.error('Erro ao atualizar vaga:', error);
+          Alert.alert('Erro', 'Não foi possível atualizar o status da vaga.');
+        }
       }
     } catch (error) {
       console.error('Erro ao adicionar reserva:', error);
@@ -199,5 +219,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 
 export default DetailScreen;
