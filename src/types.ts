@@ -14,18 +14,18 @@ export type Enums<T extends keyof Database['public']['Enums']> =
   
 export type tipoVaga = 'Especial' | 'Normal'
 
-export type Vaga = {
-  id: number;
-  local: string; // nome do estacionamento
-  tipo: tipoVaga;
-  status: boolean; // True = Disponível | False = Ocupada
-  plano: number;
-};
-
 export type Perfil = {
   id: number;
   email: string;
   password: string;
+};
+
+export type Vaga = {
+  id: number;
+  local: string;
+  tipo: tipoVaga;
+  status: boolean;
+  plano: number;
 };
 
 export type Estacionamento = {

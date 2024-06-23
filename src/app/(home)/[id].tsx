@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } fr
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { Vaga } from '../../types';
 import { supabase } from '../../lib/supabase';
+import * as Updates from 'expo-updates';
+import { Link, useRouter } from 'expo-router';
 
 type RouteParams = {
   InfoVaga: {
@@ -16,6 +18,7 @@ const DetailScreen = () => {
   const [vaga, setVaga] = useState<Vaga | null>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchVaga = async () => {
@@ -105,6 +108,7 @@ const DetailScreen = () => {
         Alert.alert(
           'Reserva Confirmada!',
           `ID da Vaga: ${vaga.id}\nInício da Reserva: ${inicioReserva.toLocaleTimeString()}\nFim da Reserva: ${fimReserva.toLocaleTimeString()}`
+          
         );
         try {
           const { error: updateError } = await supabase
@@ -116,11 +120,14 @@ const DetailScreen = () => {
             console.error('Erro ao atualizar vaga:', updateError);
             Alert.alert('Erro', 'Não foi possível atualizar o status da vaga.');
           } else {
-            console.log('Status da vaga atualizado para false.');
             setVaga(prevVaga => ({
               ...prevVaga!,
               status: false
             }));
+            
+            setTimeout(async () => {
+              await Updates.reloadAsync();
+            }, 1000);
           }
         } catch (error) {
           console.error('Erro ao atualizar vaga:', error);
@@ -219,6 +226,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
 
 export default DetailScreen;
