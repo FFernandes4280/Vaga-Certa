@@ -38,26 +38,19 @@ const Anhembi = () => {
   }, []);
 
   const renderItem = ({ item }: { item: Vaga }) => (
-    <Link 
-      key={item.id}
-      href={`${item.id}`}
-      style={styles.link}
-      asChild
-    >
-      <Pressable 
-        onPress={() => console.log('Vaga ID:', item.id)} // Para garantir que o ID está sendo passado
-        style={({ pressed }) => [
-          styles.itemContainer,
-          { opacity: pressed ? 0.5 : 1 },
-        ]}
-      >
+    <Link key={item.id} 
+          href={`/${item.id}`} 
+          style={styles.link} 
+          asChild>
+      <Pressable style={styles.itemContainer}>
         <View style={[styles.item, {
           backgroundColor: item.status ? 'green' : 'red',
         }]}>
-          <Text style={styles.itemText}>ID: {item.id}</Text>
+            <Text style={styles.itemText}>ID: {item.id}</Text>
         </View>
       </Pressable>
     </Link>
+  
   );
 
   if (loading) {

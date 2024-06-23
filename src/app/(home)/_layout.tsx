@@ -27,7 +27,7 @@ export default function HomeDrawer() {
       <Stack.Screen name="Drawer" component={DrawerScreens} options={{ headerShown: false }} />
       <Stack.Screen name="Anhembi" component={Anhembi} />
       <Stack.Screen name="Morumbi" component={Morumbi} />
-      <Stack.Screen name="[id]" component={DetailsScreen} />
+      <Stack.Screen name="[id]" component={DetailsScreen} options={{ title: 'Faça sua reserva:' }}/>
     </Stack.Navigator>
   );
 }
