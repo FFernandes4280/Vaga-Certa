@@ -14,7 +14,6 @@ const Drawer = createDrawerNavigator<RootStackParamList>();
 
 const AuthLayout: React.FC = () => {
   return (
-    <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
         <Drawer.Screen name="Home" component={Vagas} />
         <Drawer.Screen name="Info" component={InfoVaga} />
@@ -22,7 +21,6 @@ const AuthLayout: React.FC = () => {
         <Drawer.Screen name="Reservas" component={Reservas} />
         <Drawer.Screen name="Perfil" component={ProfileScreen} />
       </Drawer.Navigator>
-    </NavigationContainer>
   );
 };
 
