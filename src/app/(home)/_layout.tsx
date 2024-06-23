@@ -1,16 +1,13 @@
-<<<<<<< Updated upstream
 import 'react-native-gesture-handler';
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
 import Vagas from './vagas';
 import InfoVaga from './info';
 import Mapa from './mapa';
 import ProfileScreen from './perfil';
 import Reservas from './reservas';
-import { RootStackParamList } from '../../types';
 
-const Drawer = createDrawerNavigator<RootStackParamList>();
+const Drawer = createDrawerNavigator();
 
 const AuthLayout: React.FC = () => {
   return (
@@ -25,13 +22,12 @@ const AuthLayout: React.FC = () => {
 };
 
 export default AuthLayout;
-=======
-import React from 'react';
-import TestInfoVaga from './TestInfoVaga';
 
-const App: React.FC = () => {
-  return <TestInfoVaga />;
-};
+// import React from 'react';
+// import TestInfoVaga from './TestInfoVaga';
 
-export default App;
->>>>>>> Stashed changes
+// const App: React.FC = () => {
+//   return <TestInfoVaga />;
+// };
+
+// export default App;
