@@ -14,14 +14,7 @@ const App = () => {
     return <Redirect href="/entrar" />;
   }
 
-  return (
-    <View style={styles.container}>
-      <Link href="/vagas" asChild>
-        <Button title="Home" />
-      </Link>
-      <Button onPress={() => supabase.auth.signOut()} title="Sair" />
-    </View>
-  );
+  return <Redirect href="/vagas" />;
 };
 
 const styles = StyleSheet.create({

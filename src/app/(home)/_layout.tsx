@@ -6,7 +6,7 @@ import Morumbi from './Morumbi';
 import Reservas from './reservas';
 import ProfileScreen from './perfil';
 import DetailsScreen from './[id]';
-
+import Sair from './sair';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -17,6 +17,7 @@ function DrawerScreens() {
       <Drawer.Screen name="Home" component={Vagas} />
       <Drawer.Screen name="Reservas" component={Reservas} />
       <Drawer.Screen name="Perfil" component={ProfileScreen} />
+      <Drawer.Screen name="Sair" component={Sair}/>
     </Drawer.Navigator>
   );
 }
